@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="01" author="khames">
+
+        <comment>Creating tables</comment>
+
+
+        <createTable tableName="oauth2_users" remarks="A table to contain all users">
+            <column name="id" type="varchar(36)">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="login" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enabled" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="perimeters" type="varchar(500)"/>
+            <column name="acls" type="varchar(255)"/>
+            <column name="email_validation" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="oauth2_roles" remarks="A table to contain all the roles">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="oauth2_users_roles" remarks="A table to contain all the users and roles">
+            <column name="user_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="permissions" remarks="A table to contain all the permissions">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="roles_permissions" remarks="A table to contain all the roles and permissions">
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permission_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createSequence
+                cycle="true"
+                incrementBy="1"
+                ordered="true"
+                sequenceName="HIBERNATE_SEQUENCE"
+                startValue="100"/>
+
+        <addForeignKeyConstraint constraintName="fk_oauth2_users"
+                                 baseTableName="oauth2_users_roles" baseColumnNames="user_id"
+                                 referencedTableName="oauth2_users" referencedColumnNames="id"/>
+        <addForeignKeyConstraint constraintName="fk_oauth2_roles"
+                                 baseTableName="oauth2_users_roles" baseColumnNames="role_id"
+                                 referencedTableName="oauth2_roles" referencedColumnNames="id"/>
+
+
+        <addForeignKeyConstraint constraintName="fk_oauth2_roles_p"
+                                 baseTableName="roles_permissions" baseColumnNames="role_id"
+                                 referencedTableName="oauth2_roles" referencedColumnNames="id"/>
+        <addForeignKeyConstraint constraintName="fk_oauth2_permission"
+                                 baseTableName="roles_permissions" baseColumnNames="permission_id"
+                                 referencedTableName="permissions" referencedColumnNames="id"/>
+
+    </changeSet>
+</databaseChangeLog>

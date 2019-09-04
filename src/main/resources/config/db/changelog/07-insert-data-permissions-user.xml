@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="07" author="anis.bessa">
+
+        <comment>Inserting Permissions</comment>
+
+        <insert tableName="permissions">
+            <column name="id" value="21"/>
+            <column name="name" value="PERM_MANAGE_USER"/>
+            <column name="type" value="WRITE"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="id" value="16"/>
+            <column name="name" value="PERM_UPDATE_PASSWORD"/>
+            <column name="type" value="WRITE"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="id" value="17"/>
+            <column name="name" value="PERM_UPDATE_ROLES"/>
+            <column name="type" value="WRITE"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="id" value="18"/>
+            <column name="name" value="PERM_REGISTER"/>
+            <column name="type" value="WRITE"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="id" value="19"/>
+            <column name="name" value="PERM_FORGET_PASSWORD"/>
+            <column name="type" value="WRITE"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="id" value="20"/>
+            <column name="name" value="PERM_FULL_USER_QUERY"/>
+            <column name="type" value="READ"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

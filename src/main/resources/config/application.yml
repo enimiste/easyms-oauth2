@@ -1,0 +1,92 @@
+server:
+  port: 2000
+
+#Admin configuration
+info:
+  name: @app.id@
+  description: @app.id@
+  version: @pom.version@
+  stage: local
+
+
+spring:
+  application:
+    id: @app.id@
+    name: @app.id@
+  jpa:
+    database-platform: ${jpa.database-platform}
+  datasource:
+    url: ${datasource.url}
+    username: ${datasource.username}
+    password: ${datasource.password}
+    driver-class-name: ${datasource.driver-class-name}
+  h2.console:
+    enabled: ${h2.console.enabled}
+    path: ${h2.console.path}
+  liquibase:
+    change-log: classpath:config/db/db.changelog-master.xml
+  profiles.active: dev
+  boot:
+    admin:
+      client:
+        url: ${boot.admin.client.url}
+        username: ${boot.admin.client.username}
+        password: ${boot.admin.client.password}
+
+easyms:
+  tomcat:
+    accesslog:
+      enabled: true
+  keystore.path: oauth2.jks
+  token:
+    expirationTime: 1800 # (seconds) 30 minutes
+  logging:
+    logstash: # Forward logs to logstash over a socket, used by LoggingConfig
+      enabled: false
+      host: "localhost"
+      port: 5000
+      queue-size: 512
+  oAuthClients:
+    platform-ui:
+      clientSecret: ${oauth-platform-ui.secret}
+      authorities: [PLATFORM_UI]
+      authorizedGrantTypes: [password, client_credentials, refresh_token]
+
+    secure-client-ui:
+      clientSecret: ${oauth-secure-client-ui.secret}
+      authorizedGrantTypes: [password, refresh_token]
+
+    secure-client-api:
+      clientSecret: ${oauth-secure-client-api.secret}
+      authorities: [SECURE_CLIENT_API]
+      authorizedGrantTypes: [client_credentials, refresh_token]
+
+    swagger-platform:
+      clientSecret: ${oauth-swagger-platform.secret}
+      authorities: [ADMIN, DSL]
+      authorizedGrantTypes: [client_credentials]
+      enabled: true
+
+    swagger-secure-client-platform:
+      clientSecret: ${oauth-swagger-secure-client-platform.secret}
+      authorities: [ADMIN, DSL]
+      authorizedGrantTypes: [client_credentials]
+      enabled: true
+
+    dsl:
+      clientSecret: ${oauth-dsl.secret}
+      authorities: [DSL]
+      authorizedGrantTypes: [client_credentials]
+
+swagger:
+  paths: /api.*
+  api.info:
+    title: @app.id@
+    description: @pom.description@ Documentation
+    contact: @swagger.project.contact@
+    version: @pom.version@
+    license: license
+    licenseUrl: http://easyms.fr/LICENSE-0.0.1.html
+
+management.endpoints.web.exposure.include: "*"
+

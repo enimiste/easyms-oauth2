@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="05" author="khames" context="data">
+
+        <comment>Inserting Users</comment>
+
+        <insert tableName="oauth2_users">
+            <column name="id" value="1"/>
+            <column name="login" value="admin-client@yopmail.com"/>
+            <column name="password" value="$2a$10$dF1XXmajIyX5TDN79Yi2JuV6BVm3ehU.2d9X9/s1AwRPMcnUbgc0."/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="perimeters" value="1"/>
+            <column name="acls" value="ADMIN"/>
+            <column name="email_validation" valueBoolean="true"/>
+        </insert>
+
+        <insert tableName="oauth2_users">
+            <column name="id" value="2"/>
+            <column name="login" value="admin-plateforme@yopmail.com"/>
+            <column name="password" value="$2a$10$dF1XXmajIyX5TDN79Yi2JuV6BVm3ehU.2d9X9/s1AwRPMcnUbgc0."/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="perimeters" value="ALL"/>
+            <column name="acls" value="ADMIN"/>
+            <column name="email_validation" valueBoolean="true"/>
+        </insert>
+        <insert tableName="oauth2_users">
+            <column name="id" value="3"/>
+            <column name="login" value="admin@yopmail.com"/>
+            <column name="password" value="$2a$10$dF1XXmajIyX5TDN79Yi2JuV6BVm3ehU.2d9X9/s1AwRPMcnUbgc0."/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="perimeters" value="ALL"/>
+            <column name="acls" value="ADMIN"/>
+            <column name="email_validation" valueBoolean="true"/>
+        </insert>
+
+
+    </changeSet>
+
+</databaseChangeLog>

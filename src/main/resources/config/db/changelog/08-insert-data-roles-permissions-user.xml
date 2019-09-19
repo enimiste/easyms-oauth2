@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="08" author="anis.bessa">
+
+        <comment>Inserting Roles and Permissions</comment>
+
+        <!--PLATFORM_UI -->
+        <insert tableName="roles_permissions">
+            <column name="role_id" value="1"/>
+            <column name="permission_id" value="18"/>
+        </insert>
+        <insert tableName="roles_permissions">
+            <column name="role_id" value="1"/>
+            <column name="permission_id" value="19"/>
+        </insert>
+
+        <!-- ADMIN_CLIENT -->
+
+        <insert tableName="roles_permissions">
+            <column name="role_id" value="4"/>
+            <column name="permission_id" value="16"/>
+        </insert>
+
+
+        <!-- ADMIN -->
+        <insert tableName="roles_permissions">
+            <column name="role_id" value="5"/>
+            <column name="permission_id" value="21"/>
+        </insert>
+
+        <insert tableName="roles_permissions">
+            <column name="role_id" value="5"/>
+            <column name="permission_id" value="16"/>
+        </insert>
+        <insert tableName="roles_permissions">
+            <column name="role_id" value="5"/>
+            <column name="permission_id" value="17"/>
+        </insert>
+        <insert tableName="roles_permissions">
+            <column name="role_id" value="5"/>
+            <column name="permission_id" value="20"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

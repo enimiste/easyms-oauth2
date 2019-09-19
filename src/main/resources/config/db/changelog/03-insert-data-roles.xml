@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="03" author="khames">
+
+        <comment>Inserting Roles</comment>
+
+        <insert tableName="oauth2_roles">
+            <column name="id" value="1"/>
+            <column name="name" value="PLATFORM_UI"/>
+        </insert>
+
+        <insert tableName="oauth2_roles">
+            <column name="id" value="2"/>
+            <column name="name" value="SECURE_CLIENT_API"/>
+        </insert>
+
+        <insert tableName="oauth2_roles">
+            <column name="id" value="3"/>
+            <column name="name" value="DSL"/>
+        </insert>
+
+        <insert tableName="oauth2_roles">
+            <column name="id" value="4"/>
+            <column name="name" value="ADMIN_CLIENT"/>
+        </insert>
+        <insert tableName="oauth2_roles">
+            <column name="id" value="5"/>
+            <column name="name" value="ADMIN"/>
+        </insert>
+        <insert tableName="oauth2_roles">
+            <column name="id" value="6"/>
+            <column name="name" value="SUPER_ADMIN"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -12,6 +12,7 @@
     <artifactId>easyms-oauth2</artifactId>
     <description>Easyms OAuth2 Server</description>
 
+
     <dependencies>
         <dependency>
             <groupId>com.easyms</groupId>

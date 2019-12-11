@@ -63,7 +63,7 @@ easyms:
 
     swagger-platform:
       clientSecret: ${oauth-swagger-platform.secret}
-      authorities: [ADMIN, DSL]
+      authorities: [ADMIN, DSL, ADMIN_CLIENT]
       authorizedGrantTypes: [client_credentials]
       enabled: true
 

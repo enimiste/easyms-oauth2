@@ -14,15 +14,12 @@ spring:
     id: @app.id@
     name: @app.id@
   jpa:
-    database-platform: ${jpa.database-platform}
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     url: ${datasource.url}
     username: ${datasource.username}
     password: ${datasource.password}
-    driver-class-name: ${datasource.driver-class-name}
-  h2.console:
-    enabled: ${h2.console.enabled}
-    path: ${h2.console.path}
+    driver-class-name: org.postgresql.Driver
   liquibase:
     change-log: classpath:config/db/db.changelog-master.xml
   profiles.active: dev
@@ -90,3 +87,34 @@ swagger:
 
 management.endpoints.web.exposure.include: "*"
 
+---
+spring:
+  profiles: sample
+
+liquibase.contexts: data
+
+---
+spring:
+  profiles: h2
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  datasource:
+    url: jdbc:h2:mem:oauth2db;DB_CLOSE_DELAY=-1
+    username: oauth2
+    password: secret
+    driver-class-name: org.h2.Driver
+  h2.console:
+    enabled: true
+    path: /h2-console
+
+---
+spring:
+  profiles: test
+  jpa:
+    hibernate.ddl-auto: none
+  h2.console.enabled: false
+
+spring.profiles.include:
+  - h2
+
+liquibase.contexts: testData

@@ -1,6 +1,6 @@
 package com.easyms.security.service;
 
-import com.easyms.common.ms.error.CommonErrorMessages;
+import com.easyms.rest.ms.error.CommonErrorMessages;
 import com.easyms.security.config.OAuthProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

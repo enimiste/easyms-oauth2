@@ -1,6 +1,6 @@
 package com.easyms.security.service;
 
-import com.easyms.common.ms.error.CommonErrorMessages;
+import com.easyms.rest.ms.error.CommonErrorMessages;
 import com.easyms.security.entity.User;
 import com.easyms.security.utils.TokenHelper;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
 package com.easyms.security.service;
 
-import com.easyms.common.ms.utils.StreamUtils;
+import com.easyms.rest.ms.utils.StreamUtils;
 import com.easyms.security.entity.Permission;
 import com.easyms.security.entity.Role;
 import com.easyms.security.entity.User;

@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfigurat
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
 /**
  * @author khames.
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 @Import(OAuthConfiguration.class)
 @AllArgsConstructor
+@EnableResourceServer
 public class OAuth2Application {
 
     public static void main(String[] args) {

@@ -16,6 +16,8 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 public class EasymsUserDetails extends User {
 
     private String userId;
+    private String firstName;
+    private String lastName;
     private List<String> perimeters;
     private List<String> roles;
 

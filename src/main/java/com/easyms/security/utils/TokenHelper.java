@@ -4,13 +4,21 @@ import com.easyms.security.entity.Permission;
 import com.easyms.security.entity.Role;
 import com.easyms.security.entity.User;
 import com.easyms.security.service.EasymsUserDetails;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.jwt.JwtHelper;
+import org.springframework.security.jwt.crypto.sign.RsaSigner;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Component;
 
+import java.security.KeyPair;
+import java.security.interfaces.RSAPrivateKey;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,7 +30,19 @@ import static com.easyms.security.utils.Constants.*;
  * @author khames.
  */
 @Component
+@RequiredArgsConstructor
 public class TokenHelper {
+
+    private final ObjectMapper objectMapper;
+    private final KeyPair keyPair;
+
+    public Map<String, Object> getAdditionalInformationWithIdToken(OAuth2AccessToken accessToken, EasymsUserDetails user) {
+        Map<String, Object> additionalInformation = accessToken.getAdditionalInformation();
+        Map<String, Object> additionalInfo = Maps.newHashMap();
+        additionalInfo.putAll(additionalInformation);
+        additionalInfo.put(ID_TOKEN, generateIdToken(buildUserInformation(user)));
+        return additionalInfo;
+    }
 
     public Map<String, Object> buildUserInformation(EasymsUserDetails userDetails) {
         Map<String, Object> map = Maps.newHashMap();
@@ -30,6 +50,9 @@ public class TokenHelper {
         map.put(LOGIN, userDetails.getUsername());
         map.put(ROLES, userDetails.getRoles());
         map.put(PERIMETERS, userDetails.getPerimeters());
+        map.put(FIRST_NAME, userDetails.getFirstName());
+        map.put(LAST_NAME, userDetails.getLastName());
+
         return map;
     }
 
@@ -73,5 +96,18 @@ public class TokenHelper {
                 .stream()
                 .map(Role::getName)
                 .collect(Collectors.toList());
+    }
+
+    private String generateIdToken(Map<String, Object> idTokenMap) {
+        try {
+            String content = objectMapper.writeValueAsString(idTokenMap);
+            return JwtHelper.encode(content, getSigner()).getEncoded();
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Cannot format token id map to JSON", e);
+        }
+    }
+
+    private RsaSigner getSigner() {
+        return new RsaSigner((RSAPrivateKey) keyPair.getPrivate());
     }
 }

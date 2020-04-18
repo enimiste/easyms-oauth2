@@ -1,9 +1,13 @@
 package com.easyms.security.config;
 
+import com.easyms.security.config.jwtbearer.JwtBearerTokenGranter;
 import com.easyms.security.service.ClientService;
 import com.easyms.security.service.EasymsUserDetailsService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -13,11 +17,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.jwt.crypto.sign.RsaVerifier;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.CompositeTokenGranter;
+import org.springframework.security.oauth2.provider.TokenGranter;
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -25,6 +32,8 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import java.security.KeyPair;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author khames.
@@ -42,6 +51,10 @@ public class OAuthConfiguration extends AuthorizationServerConfigurerAdapter {
     private final EasymsUserDetailsService easymsUserDetailsService;
     private final OAuthProperties properties;
     private final KeyPair keyPair;
+    private final ObjectMapper objectMapper;
+    private RsaVerifier rsaVerifier;
+    @Value("${easyms.jwt-bearer-client.public.key}")
+    private String publicKey;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -50,7 +63,7 @@ public class OAuthConfiguration extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
-        endpoints.tokenServices(tokenServices()).authenticationManager(authManager);
+        endpoints.tokenServices(tokenServices()).authenticationManager(authManager).tokenGranter(tokenGranter(endpoints));;
     }
 
     @Override
@@ -96,6 +109,13 @@ public class OAuthConfiguration extends AuthorizationServerConfigurerAdapter {
         userAuthenticationConverter.setUserDetailsService(easymsUserDetailsService);
         return userAuthenticationConverter;
     }
+
+    private TokenGranter tokenGranter(final AuthorizationServerEndpointsConfigurer endpoints) {
+        List<TokenGranter> granters = Lists.newArrayList(Collections.singletonList(endpoints.getTokenGranter()));
+        granters.add(new JwtBearerTokenGranter(endpoints, objectMapper, publicKey));
+        return new CompositeTokenGranter(granters);
+    }
+
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {

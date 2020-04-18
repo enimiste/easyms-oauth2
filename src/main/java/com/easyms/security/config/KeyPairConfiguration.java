@@ -20,7 +20,7 @@ import java.security.KeyPair;
 @Configuration
 public class KeyPairConfiguration {
 
-    private static final char[] PASSWORD = "Easyms2019".toCharArray();
+    private static final char[] PASSWORD = "Easyms2020".toCharArray();
     private static final String ALIAS = "jwt";
     @Value("${easyms.keystore.path}")
     private String keystorePath;

@@ -28,9 +28,9 @@ nbdist/
 
 ### Maven ###
 /log/**
-/target/**
-/easyms/**
+*/target/**
+/target/*
 *.bak
 
-
-
+### Mac ###
+.DS_Store

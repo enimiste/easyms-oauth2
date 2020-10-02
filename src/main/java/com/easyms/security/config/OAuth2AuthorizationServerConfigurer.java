@@ -5,9 +5,12 @@ import com.easyms.security.service.ClientService;
 import com.easyms.security.service.EasymsUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.crypto.RSASSASigner;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +20,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.jwt.crypto.sign.RsaSigner;
 import org.springframework.security.jwt.crypto.sign.RsaVerifier;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -31,7 +35,15 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
-import java.security.KeyPair;
+import java.io.ByteArrayInputStream;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.Certificate;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,15 +56,12 @@ import java.util.List;
 @EnableJpaRepositories(basePackages = "com.easyms.security.repository")
 @EnableAuthorizationServer
 @RequiredArgsConstructor
-public class OAuthConfiguration extends AuthorizationServerConfigurerAdapter {
+public class OAuth2AuthorizationServerConfigurer extends AuthorizationServerConfigurerAdapter {
 
     private final AuthenticationManager authManager;
     private final ClientService clientService;
-    private final EasymsUserDetailsService easymsUserDetailsService;
-    private final OAuthProperties properties;
-    private final KeyPair keyPair;
     private final ObjectMapper objectMapper;
-    private RsaVerifier rsaVerifier;
+    private final DefaultTokenServices defaultTokenServices;
     @Value("${easyms.jwt-bearer-client.public.key}")
     private String publicKey;
 
@@ -63,7 +72,7 @@ public class OAuthConfiguration extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
-        endpoints.tokenServices(tokenServices()).authenticationManager(authManager).tokenGranter(tokenGranter(endpoints));;
+        endpoints.tokenServices(defaultTokenServices).authenticationManager(authManager).tokenGranter(tokenGranter(endpoints));
     }
 
     @Override
@@ -75,40 +84,6 @@ public class OAuthConfiguration extends AuthorizationServerConfigurerAdapter {
                 .checkTokenAccess("permitAll()");
     }
 
-    @Bean
-    @Primary
-    public DefaultTokenServices tokenServices() {
-        DefaultTokenServices tokenServices = new DefaultTokenServices();
-        tokenServices.setTokenStore(tokenStore());
-        tokenServices.setSupportRefreshToken(true);
-        tokenServices.setReuseRefreshToken(false);
-        tokenServices.setClientDetailsService(clientService);
-        tokenServices.setTokenEnhancer(jwtAccessTokenConverter());
-        tokenServices.setAccessTokenValiditySeconds(properties.getToken().getExpirationTime());
-        return tokenServices;
-    }
-
-    @Bean
-    public TokenStore tokenStore() {
-        return new JwtTokenStore(jwtAccessTokenConverter());
-    }
-
-    @Bean
-    public JwtAccessTokenConverter jwtAccessTokenConverter() {
-        JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
-        jwtAccessTokenConverter.setKeyPair(keyPair);
-        DefaultAccessTokenConverter defaultAccessTokenConverter = new DefaultAccessTokenConverter();
-        defaultAccessTokenConverter.setUserTokenConverter(userAuthenticationConverter());
-        jwtAccessTokenConverter.setAccessTokenConverter(defaultAccessTokenConverter);
-        return jwtAccessTokenConverter;
-    }
-
-    @Bean
-    public CustomUserAuthenticationConverter userAuthenticationConverter() {
-        CustomUserAuthenticationConverter userAuthenticationConverter = new CustomUserAuthenticationConverter();
-        userAuthenticationConverter.setUserDetailsService(easymsUserDetailsService);
-        return userAuthenticationConverter;
-    }
 
     private TokenGranter tokenGranter(final AuthorizationServerEndpointsConfigurer endpoints) {
         List<TokenGranter> granters = Lists.newArrayList(Collections.singletonList(endpoints.getTokenGranter()));
@@ -117,10 +92,6 @@ public class OAuthConfiguration extends AuthorizationServerConfigurerAdapter {
     }
 
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }
 
 

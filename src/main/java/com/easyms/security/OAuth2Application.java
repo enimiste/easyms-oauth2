@@ -1,6 +1,6 @@
 package com.easyms.security;
 
-import com.easyms.security.config.OAuthConfiguration;
+import com.easyms.security.config.OAuth2AuthorizationServerConfigurer;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
  * @author khames.
  */
 @SpringBootApplication(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
-@Import(OAuthConfiguration.class)
+@Import(OAuth2AuthorizationServerConfigurer.class)
 @AllArgsConstructor
 @EnableResourceServer
 public class OAuth2Application {

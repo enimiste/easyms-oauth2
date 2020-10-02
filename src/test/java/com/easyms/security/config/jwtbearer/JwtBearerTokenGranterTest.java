@@ -15,6 +15,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
@@ -61,6 +62,9 @@ class JwtBearerTokenGranterTest {
 
     @Inject
     ObjectMapper objectMapper;
+
+
+
 
     @Test
     void should_return_token_with_password_credentials() throws Exception {
@@ -119,13 +123,10 @@ class JwtBearerTokenGranterTest {
         JWTClaimsSet jwtClaimsSet = SignedJWT.parse(accessToken).getJWTClaimsSet();
         assertEquals("testClient", jwtClaimsSet.getClaim("client_id"));
         Object autorities = jwtClaimsSet.getClaim("authorities");
-        assertTrue(autorities instanceof net.minidev.json.JSONArray);
-
+        assertTrue(autorities instanceof com.nimbusds.jose.shaded.json.JSONArray);
         List<String> authoritiesStr = new ArrayList<>();
-        ((net.minidev.json.JSONArray) autorities).iterator().forEachRemaining(auth -> authoritiesStr.add(auth.toString()));
+        ((com.nimbusds.jose.shaded.json.JSONArray) autorities).iterator().forEachRemaining(auth -> authoritiesStr.add(auth.toString()));;
         assertIterableEquals(Lists.newArrayList("ROLE_PLATFORM_UI", "PERM_FORGET_PASSWORD", "PERM_REGISTER"), authoritiesStr);
-
-
 
     }
 

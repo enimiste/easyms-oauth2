@@ -29,7 +29,6 @@ spring:
         url: ${boot.admin.client.url}
         username: ${boot.admin.client.username}
         password: ${boot.admin.client.password}
-
 easyms:
   tomcat:
     accesslog:
@@ -134,29 +133,24 @@ spring:
 spring.profiles.include:
   - h2
 
-liquibase.contexts: testData
+liquibase.contexts: data
 
 spring.boot.admin.client.enabled: false
+
+---
+spring:
+  profiles: azure-vault
+
+azure:
+  keyvault:
+    enabled: true
+    uri: https://yourvault.vault.azure.net/
+    client-id: yourvault-prinicpal
+    tenant-id: yourvault-tenant
+    client-key: yourvault-client-key
+    token-acquire-timeout-seconds: 60
+    refresh-interval: 1800000
+
 easyms:
-
-  oAuthClients:
-    testClient:
-      clientSecret: $2a$10$0uJIlYyZoGmCfK.pTT7r0u7vrU5vVMNIZ6sAKuEDrD1MmYjlegqkO
-      authorities: [PLATFORM_UI]
-      authorizedGrantTypes: [password, client_credentials, refresh_token]
-
-    test-jwt-bearer-client:
-      clientSecret: $2a$10$0uJIlYyZoGmCfK.pTT7r0u7vrU5vVMNIZ6sAKuEDrD1MmYjlegqkO
-      authorities: [PLATFORM_UI]
-      authorizedGrantTypes: [jwt-bearer]
-
-  jwt-bearer-client.public.key: |
-          -----BEGIN PUBLIC KEY-----
-          MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApazQThCwBLHWveVQyQQQ
-          YQbWw0wh1tFcQX/YfwWxfAoAs0+S00vQl3zfhEtQ58Z2NX0WiBIO0dP6kxoSM3j4
-          Mzmn/6R+EZWZWjqGCcjcTN90oF/GmaqDTp6bfPcphdZoSfUk9a0HiZICTjNuWaoE
-          z0sUvrE1iH6e3qTIIsFExT9Y+tJSahQJcMeuW+mgW5A8LCgvNnmFlKR9qeVga11d
-          8HwdYNs16/QRCLmWrnzUpTUKWYHVIbgJtrLic16ElSH2U+gTwrjzxEVd28HQo7Hm
-          FeFsVDLZ/iNTS90cwSUALaYZPj2urH56YsgzrlHlH6X7yfyW2hoKCPlRfMZVSD7B
-          GwIDAQAB
-          -----END PUBLIC KEY-----
+  oAuthPemEnabled: true
+  oAuthPemPrivateKey: ${certif.demo}

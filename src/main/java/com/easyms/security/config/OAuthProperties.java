@@ -3,6 +3,7 @@ package com.easyms.security.config;
 import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,6 +21,11 @@ public class OAuthProperties {
 
     private final Token token = new Token();
     private final Map<String, OAuthClientDetails> oAuthClients = Maps.newHashMap();
+    @Setter
+    private String oAuthPemPrivateKey;
+
+    @Setter
+    private Boolean oAuthPemEnabled;
 
     @Data
     public static class Token {

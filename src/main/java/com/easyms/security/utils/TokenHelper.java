@@ -76,7 +76,7 @@ public class TokenHelper {
     }
 
     private EasymsUserDetails buildEasymsUserDetails(User user, List<GrantedAuthority> authorities) {
-        EasymsUserDetails userDetails = new EasymsUserDetails(user.getLogin(), user.getPassword(), user.isEnabled(), user.isEnabled(), authorities);
+        EasymsUserDetails userDetails = new EasymsUserDetails(user.getLogin(), user.getPassword(), user.isEnabled(), user.getEmailValidation(), authorities);
         userDetails.setUserId(user.getId().toString());
         userDetails.setRoles(getRolesName(user));
         userDetails.setPerimeters(user.getPerimetersAsList());

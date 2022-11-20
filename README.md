@@ -1,11 +1,16 @@
-**generate jks file**
+**Generate jks file :**
 
+```sh
 keytool -genkeypair -alias jwt -keyalg RSA -dname "CN=jwt, L=Paris, S=Paris, C=FR" -keypass Easyms2020 -keystore jwt.jks -storepass Easyms2020
+```
 
-Extract the public key (only the public key , without the certificate) into file jwt.pub
+**Extract the public key (only the public key , without the certificate) into file jwt.pub :** 
+
+```sh
 keytool -list -rfc -alias jwt -keypass Easyms2020 -keystore jwt.jks -storepass Easyms2020 | openssl x509 -inform pem -pubkey -noout > jwt.pub
+```
 
-Put the content of the jwt.pub file in each MS :
+**Put the content of the jwt.pub file in each MS :**
 
         key-value: |
           -----BEGIN PUBLIC KEY-----
@@ -18,4 +23,4 @@ Put the content of the jwt.pub file in each MS :
           FwIDAQAB
           -----END PUBLIC KEY-----
 
-And copy the jwt.jks file to your Oauth2 project
+**And copy the jwt.jks file to your Oauth2 project**
